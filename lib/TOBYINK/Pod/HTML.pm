@@ -6,8 +6,9 @@ use HTML::HTML5::Parser ();
 use Pod::Simple ();
 use XML::LibXML::QuerySelector ();
 
-package TOBYINK::Pod::HTML::Helper
 {
+	package TOBYINK::Pod::HTML::Helper;
+	
 	our $AUTHORITY = 'cpan:TOBYINK';
 	our $VERSION   = '0.001';
 	
@@ -22,8 +23,9 @@ package TOBYINK::Pod::HTML::Helper
 	}
 }
 
-package TOBYINK::Pod::HTML
 {
+	package TOBYINK::Pod::HTML;
+	
 	our $AUTHORITY = 'cpan:TOBYINK';
 	our $VERSION   = '0.001';
 	
