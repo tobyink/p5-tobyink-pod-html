@@ -1,0 +1,37 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title></title>
+		<meta charset="utf-8" />
+	</head>
+	<body class="pod">
+		<span id="___top"></span>
+		<p>OK, so there were already <a class="podlinkurl" href="https://metacpan.org/search?q=pod+html">a thousand solutions</a> for converting pod to HTML, but I wasn't especially happy with any of them. Things I wanted were:</p>
+		<ul>
+			<li>Clean-looking XHTML and/or HTML5 output.</li>
+			<li>Unicode support. ☻</li>
+			<li>Good syntax highlighting for Perl code samples within the pod.</li>
+			<li>Links to <a class="podlinkurl" href="https://metacpan.org/">metacpan.org</a> by default rather than <a class="podlinkurl" href="http://search.cpan.org/">search.cpan.org</a>.</li>
+		</ul>
+		<p>And so I've cobbled together a solution using <a class="podlinkpod" href="https://metacpan.org/module/Pod%3A%3ASimple">Pod::Simple</a>, <a class="podlinkpod" href="https://metacpan.org/module/PPI%3A%3AHTML">PPI::HTML</a>, <a class="podlinkpod" href="https://metacpan.org/module/HTML%3A%3AHTML5%3A%3AParser">HTML::HTML5::Parser</a>, <a class="podlinkpod" href="https://metacpan.org/module/HTML%3A%3AHTML5%3A%3AWriter">HTML::HTML5::Writer</a>, <a class="podlinkpod" href="https://metacpan.org/module/XML%3A%3ALibXML%3A%3APrettyPrint">XML::LibXML::PrettyPrint</a> and <a class="podlinkpod" href="https://metacpan.org/module/Moo">Moo</a>, and released it as <a class="podlinkpod" href="https://metacpan.org/module/TOBYINK%3A%3APod%3A%3AHTML">TOBYINK::Pod::HTML</a>.</p>
+		<p>Here's the example from the synopsis section:</p>
+		<pre><span class="line_number" style="color:#666"> 1: </span><span class="comment" style="color:#060;font-style:italic">    #!/usr/bin/perl
+</span><span class="line_number" style="color:#666"> 2: </span>    
+<span class="line_number" style="color:#666"> 3: </span>    <span class="keyword" style="color:#009;font-weight:bold">use</span> <span class="pragma" style="color:#009">strict</span><span class="structure">;</span>
+<span class="line_number" style="color:#666"> 4: </span>    <span class="keyword" style="color:#009;font-weight:bold">use</span> <span class="pragma" style="color:#009">warnings</span><span class="structure">;</span>
+<span class="line_number" style="color:#666"> 5: </span>    <span class="keyword" style="color:#009;font-weight:bold">use</span> <span class="word">TOBYINK::Pod::HTML</span><span class="structure">;</span>
+<span class="line_number" style="color:#666"> 6: </span>    
+<span class="line_number" style="color:#666"> 7: </span>    <span class="keyword" style="color:#009;font-weight:bold">my</span> <span class="symbol">$pod2html</span> <span class="operator" style="color:#000;font-weight:bold">=</span> <span class="double" style="color:#909">"TOBYINK::Pod::HTML"</span><span class="operator" style="color:#000;font-weight:bold">-&gt;</span><span class="word">new</span><span class="structure">(</span>
+<span class="line_number" style="color:#666"> 8: </span>        <span class="word">pretty</span>             <span class="operator" style="color:#000;font-weight:bold">=&gt;</span> <span class="number" style="color:#39C">1</span><span class="operator" style="color:#000;font-weight:bold">,</span>       <span class="comment" style="color:#060;font-style:italic"># nicely indented HTML</span>
+<span class="line_number" style="color:#666"> 9: </span>        <span class="word">code_highlighting</span>  <span class="operator" style="color:#000;font-weight:bold">=&gt;</span> <span class="number" style="color:#39C">1</span><span class="operator" style="color:#000;font-weight:bold">,</span>       <span class="comment" style="color:#060;font-style:italic"># use PPI::HTML</span>
+<span class="line_number" style="color:#666">10: </span>        <span class="word">code_line_numbers</span>  <span class="operator" style="color:#000;font-weight:bold">=&gt;</span> <span class="core" style="color:#009;font-weight:bold">undef</span><span class="operator" style="color:#000;font-weight:bold">,</span>
+<span class="line_number" style="color:#666">11: </span>        <span class="word">code_styles</span>        <span class="operator" style="color:#000;font-weight:bold">=&gt;</span> <span class="structure">{</span>        <span class="comment" style="color:#060;font-style:italic"># some CSS</span>
+<span class="line_number" style="color:#666">12: </span>            <span class="word">comment</span>   <span class="operator" style="color:#000;font-weight:bold">=&gt;</span> <span class="single" style="color:#909">'color:green'</span><span class="operator" style="color:#000;font-weight:bold">,</span>
+<span class="line_number" style="color:#666">13: </span>            <span class="word">keyword</span>   <span class="operator" style="color:#000;font-weight:bold">=&gt;</span> <span class="single" style="color:#909">'font-weight:bold'</span><span class="operator" style="color:#000;font-weight:bold">,</span>
+<span class="line_number" style="color:#666">14: </span>        <span class="structure">}</span>
+<span class="line_number" style="color:#666">15: </span>    <span class="structure">);</span>
+<span class="line_number" style="color:#666">16: </span>    
+<span class="line_number" style="color:#666">17: </span>    <span class="word">print</span> <span class="symbol">$pod2html</span><span class="operator" style="color:#000;font-weight:bold">-&gt;</span><span class="word">file_to_html</span><span class="structure">(</span><span class="word">__FILE__</span><span class="structure">);</span></pre>
+		<p>There's a basic command-line script <code>pod2html-tobyink</code> supplied with it.</p>
+		<p>Oh, and this blog post was <a class="podlinkurl" href="https://bitbucket.org/tobyink/p5-tobyink-pod-html/src/tip/devel.docs/blog/2013-02-26.pod">written as pod</a> and <a class="podlinkurl" href="https://bitbucket.org/tobyink/p5-tobyink-pod-html/src/tip/devel.docs/blog/2013-02-26.html">converted to HTML</a>.</p>
+	</body>
+</html>

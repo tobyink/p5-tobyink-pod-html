@@ -1,0 +1,76 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use TOBYINK::Pod::HTML;
+
+my $pod2html = "TOBYINK::Pod::HTML"->new(
+	pretty             => 1,       # nicely indented HTML
+	code_highlighting  => 1,       # use PPI::HTML
+	code_line_numbers  => undef,
+);
+
+print $pod2html->file_to_html(__FILE__);
+
+__END__
+
+=pod
+
+=encoding utf-8
+
+OK, so there were already
+L<a thousand solutions|https://metacpan.org/search?q=pod+html> for
+converting pod to HTML, but I wasn't especially happy with any of
+them. Things I wanted were:
+
+=over
+
+=item *
+
+Clean-looking XHTML and/or HTML5 output.
+
+=item *
+
+Unicode support. ☻
+
+=item *
+
+Good syntax highlighting for Perl code samples within the pod.
+
+=item *
+
+Links to L<metacpan.org|https://metacpan.org/> by default rather than
+L<search.cpan.org|http://search.cpan.org/>.
+
+=back
+
+And so I've cobbled together a solution using L<Pod::Simple>, L<PPI::HTML>,
+L<HTML::HTML5::Parser>, L<HTML::HTML5::Writer>, L<XML::LibXML::PrettyPrint>
+and L<Moo>, and released it as L<TOBYINK::Pod::HTML>.
+
+Here's the example from the synopsis section:
+
+    #!/usr/bin/perl
+    
+    use strict;
+    use warnings;
+    use TOBYINK::Pod::HTML;
+    
+    my $pod2html = "TOBYINK::Pod::HTML"->new(
+        pretty             => 1,       # nicely indented HTML
+        code_highlighting  => 1,       # use PPI::HTML
+        code_line_numbers  => undef,
+        code_styles        => {        # some CSS
+            comment   => 'color:green',
+            keyword   => 'font-weight:bold',
+        }
+    );
+    
+    print $pod2html->file_to_html(__FILE__);
+
+There's a basic command-line script C<pod2html-tobyink> supplied with it.
+
+Oh, and this blog post was
+L<written as pod|https://bitbucket.org/tobyink/p5-tobyink-pod-html/src/tip/devel.docs/blog/2013-02-26.pod>
+and
+L<converted to HTML|https://bitbucket.org/tobyink/p5-tobyink-pod-html/src/tip/devel.docs/blog/2013-02-26.html>.
