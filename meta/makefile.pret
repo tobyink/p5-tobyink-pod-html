@@ -1,0 +1,16 @@
+# This file provides instructions for packaging.
+
+`TOBYINK-Pod-HTML`
+	perl_version_from m`TOBYINK::Pod::HTML`;
+	version_from      m`TOBYINK::Pod::HTML`;
+	readme_from       m`TOBYINK::Pod::HTML`;
+	requires          p`Moo 1.000008`;
+	requires          p`HTML::HTML5::Parser 0.208`;
+	requires          p`XML::LibXML::QuerySelector 0.003`;
+	recommends        p`HTML::HTML5::Writer 0.201`;
+	recommends        p`PPI::Document`;
+	recommends        p`PPI::HTML`;
+	recommends        p`XML::LibXML::PrettyPrint`;
+	install_script    f`bin/pod2html-tobyink`;
+	.
+
