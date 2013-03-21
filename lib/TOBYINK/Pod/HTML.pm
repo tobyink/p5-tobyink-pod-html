@@ -21,6 +21,27 @@ use XML::LibXML::QuerySelector ();
 		$self->perldoc_url_prefix("https://metacpan.org/module/");
 		return $self;
 	}
+	
+	sub get_token
+	{
+		my $self = shift;
+		my $tok = $self->SUPER::get_token;
+		
+		if (defined $tok and $tok->[0] eq 'start' and $tok->[1] eq 'for')
+		{
+			my $target = $tok->[2]{"target"};
+			my $data;
+			until ($tok->[0] eq 'end' and $tok->[1] eq 'for')
+			{
+				$data .= $tok->[1] if $tok->[0] eq 'text';
+				$tok = $self->SUPER::get_token;
+			}
+			print {$self->{"output_fh"}} "<!-- for $target $data -->\n";
+			$tok = $self->SUPER::get_token;
+		}
+		
+		return $tok;
+	}
 }
 
 {
@@ -139,6 +160,7 @@ use XML::LibXML::QuerySelector ();
 		
 		my $tmp;
 		my $p = "TOBYINK::Pod::HTML::Helper"->new;
+		$p->accept_targets(__PACKAGE__);
 		$p->output_string(\$tmp);
 		$p->$method($input);
 		return $tmp;
@@ -160,7 +182,7 @@ use XML::LibXML::QuerySelector ();
 		%{ $dom->querySelector('head meta') } = (charset => 'utf-8');
 		
 		# No useful comments
-		$_->parentNode->removeChild($_) for $dom->findnodes('//comment()');
+		$_->parentNode->removeChild($_) for grep { not /for TOBYINK::Pod::HTML/ } $dom->findnodes('//comment()');
 		
 		# Drop these <a name> elements
 		$dom->querySelectorAll('a[name]')->foreach(sub
@@ -218,6 +240,8 @@ __END__
 TOBYINK::Pod::HTML - convert Pod to HTML like TOBYINK
 
 =head1 SYNOPSIS
+
+=for TOBYINK::Pod::HTML highlighting=perl
 
    #!/usr/bin/perl
    
