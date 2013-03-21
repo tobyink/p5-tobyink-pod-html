@@ -11,6 +11,7 @@
 	recommends        p`PPI::Document`;
 	recommends        p`PPI::HTML`;
 	recommends        p`XML::LibXML::PrettyPrint`;
+	recommends        p`Syntax::Highlight::Engine::Kate`;
 	install_script    f`bin/pod2html-tobyink`;
 	.
 
