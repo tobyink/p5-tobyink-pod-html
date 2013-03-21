@@ -4,3 +4,9 @@
 	issued  2013-02-26;
 	label   "Initial release".
 
+`TOBYINK-Pod-HTML 0.002 cpan:TOBYINK`
+	issued  2013-03-21;
+	changeset [
+		item "Allow non-Perl languages to be syntax highlighted too."^^Addition;
+	].
+
