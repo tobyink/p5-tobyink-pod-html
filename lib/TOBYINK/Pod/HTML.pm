@@ -235,7 +235,7 @@ use XML::LibXML::QuerySelector ();
 		my $self = shift;
 		my ($pre, $opt) = @_;
 		
-		my $out = $self->_syntax_highlighting_for_text($pre->textContent, $opt);		
+		my $out = $self->_syntax_highlighting_for_text($pre->textContent, $opt);
 		$out =~ s/<br>//g;  # already in <pre>!
 		
 		# Replace original <pre> contents with new stuff.
@@ -277,7 +277,7 @@ use XML::LibXML::QuerySelector ();
 		
 		my $hlt = "PPI::HTML"->new(
 			line_numbers => ($opt->{line_numbers} // scalar($txt =~ m{^\s+#!/}s)),
-		);		
+		);
 		return $hlt->html("PPI::Document"->new(\$txt));
 	}
 	
