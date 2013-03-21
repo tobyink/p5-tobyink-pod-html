@@ -67,6 +67,7 @@ use XML::LibXML::QuerySelector ();
 		is      => 'ro',
 		default => sub {
 			return +{
+				symbol        => 'color:#333;background-color:#fcc',
 				pod           => 'color:#060',
 				comment       => 'color:#060;font-style:italic',
 				operator      => 'color:#000;font-weight:bold',
@@ -86,6 +87,14 @@ use XML::LibXML::QuerySelector ();
 				keyword       => 'color:#009;font-weight:bold',
 				core          => 'color:#009;font-weight:bold',
 				line_number   => 'color:#666',
+				# for non-Perl code
+				alert         => 'color:#f00;background-color:#ff0',
+				warning       => 'color:#f00;background-color:#ff0;font-style:italic',
+				error         => 'color:#f00;background-color:#ff0;font-style:italic;font-weight:bold',
+				bstring       => '',
+				function      => '',
+				regionmarker  => '',
+				others        => '',
 			}
 		},
 	);
@@ -289,26 +298,26 @@ use XML::LibXML::QuerySelector ();
 				"\n" => "<br />\n",
 			},
 			format_table  => {
-				Alert        => [q[<span class="alert">],    q[</span>]],
-				BaseN        => [q[<span class="basen">],    q[</span>]],
-				BString      => [q[<span class="bstring">],  q[</span>]],
-				Char         => [q[<span class="single">],   q[</span>]],
-				Comment      => [q[<span class="comment">],  q[</span>]],
-				DataType     => [q[<span class="datatype">], q[</span>]],
-				DecVal       => [q[<span class="number">],   q[</span>]],
-				Error        => [q[<span class="error">],    q[</span>]],
-				Float        => [q[<span class="number">],   q[</span>]],
-				Function     => [q[<span class="function">], q[</span>]],
-				IString      => [q[<span class="double">],   q[</span>]],
-				Keyword      => [q[<span class="keyword">],  q[</span>]],
 				Normal       => ["", ""],
-				Operator     => [q[<span class="operator">], q[</span>]],
-				Others       => [q[<span class="others">],   q[</span>]],
-				RegionMarker => [q[<span class="regionmarker">], q[</span>]],
-				Reserved     => [q[<span class="keyword">],  q[</span>]],
+				Keyword      => [q[<span class="keyword">],  q[</span>]],
+				DataType     => [q[<span class="cast">],     q[</span>]],
+				DecVal       => [q[<span class="number">],   q[</span>]],
+				BaseN        => [q[<span class="number">],   q[</span>]],
+				Float        => [q[<span class="number">],   q[</span>]],
+				Char         => [q[<span class="single">],   q[</span>]],
 				String       => [q[<span class="single">],   q[</span>]],
-				Variable     => [q[<span class="variable">], q[</span>]],
+				IString      => [q[<span class="double">],   q[</span>]],
+				Comment      => [q[<span class="comment">],  q[</span>]],
+				Others       => [q[<span class="others">],   q[</span>]],
+				Alert        => [q[<span class="alert">],    q[</span>]],
+				Function     => [q[<span class="function">], q[</span>]],
+				RegionMarker => [q[<span class="regionmarker">], q[</span>]],
+				Error        => [q[<span class="error">],    q[</span>]],
+				Operator     => [q[<span class="operator">], q[</span>]],
+				Reserved     => [q[<span class="core">],     q[</span>]],
+				Variable     => [q[<span class="symbol">],   q[</span>]],
 				Warning      => [q[<span class="warning">],  q[</span>]],
+				BString      => [q[<span class="bstring">],  q[</span>]],
 			},
 		);
 		return $hl->highlightText($txt);
@@ -404,6 +413,7 @@ Defaults to undef.
 A hashref of CSS styles to assign to highlighted code. The defaults are:
 
    +{
+      symbol        => 'color:#333;background-color:#fcc',
       pod           => 'color:#060',
       comment       => 'color:#060;font-style:italic',
       operator      => 'color:#000;font-weight:bold',
@@ -423,6 +433,14 @@ A hashref of CSS styles to assign to highlighted code. The defaults are:
       keyword       => 'color:#009;font-weight:bold',
       core          => 'color:#009;font-weight:bold',
       line_number   => 'color:#666',
+      # for non-Perl code
+      alert         => 'color:#f00;background-color:#ff0',
+      warning       => 'color:#f00;background-color:#ff0;font-style:italic',
+      error         => 'color:#f00;background-color:#ff0;font-style:italic;font-weight:bold',
+      bstring       => '',
+      function      => '',
+      regionmarker  => '',
+      others        => '',
    }
 
 Which looks kind of like the Perl highlighting from SciTE.
@@ -471,11 +489,13 @@ This feature requires L<HTML::HTML5::Writer>.
 
 =head2 Alternative Syntax Highlighting
 
+=for TOBYINK::Pod::HTML language=Text
+
 This module defines an additional Pod command to change the language for
 syntax highlighting. To tell TOBYINK::Pod::HTML to switch to, say, Haskell
 instead of the default (Perl), just use:
 
-	=for TOBYINK::Pod::HTML language=Haskell
+   =for TOBYINK::Pod::HTML language=Haskell
 
 Then all subsequent code samples will be highlighted as Haskell, until
 another such command is seen.
@@ -492,7 +512,9 @@ Note that only the PPI highlighter supports line numbering.
 The following command can be used to switch to plain text syntax highlighting
 (i.e. no highlighting at all):
 
-	=for TOBYINK::Pod::HTML language=Text
+   =for TOBYINK::Pod::HTML language=Text
+
+=for TOBYINK::Pod::HTML language=Perl
 
 =head1 SEE ALSO
 
