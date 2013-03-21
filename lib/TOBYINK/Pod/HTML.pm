@@ -181,8 +181,10 @@ use XML::LibXML::QuerySelector ();
 		# My pod is always utf-8 or a subset thereof
 		%{ $dom->querySelector('head meta') } = (charset => 'utf-8');
 		
-		# No useful comments
-		$_->parentNode->removeChild($_) for grep { not /for TOBYINK::Pod::HTML/ } $dom->findnodes('//comment()');
+		# Non-useful comments
+		$_->parentNode->removeChild($_) for
+			grep { not /for TOBYINK::Pod::HTML/ }
+			$dom->findnodes('//comment()');
 		
 		# Drop these <a name> elements
 		$dom->querySelectorAll('a[name]')->foreach(sub
@@ -194,35 +196,124 @@ use XML::LibXML::QuerySelector ();
 	
 	sub _syntax_highlighting
 	{
-		require PPI::Document;
-		require PPI::HTML;
-		
 		my $self = shift;
 		my ($dom) = @_;
 		
-		my $CSS = $self->code_styles;
+		my $opt = {
+			line_numbers => $self->code_line_numbers,
+			language     => "perl",
+		};
 		
-		$dom->querySelectorAll('pre')->foreach(sub
+		$dom->findnodes('//comment() | //*[local-name()="pre"]')->foreach(sub
 		{
-			my $pre = $_;
-			my $txt = $pre->textContent;
-			my $hlt = "PPI::HTML"->new(
-				line_numbers => ($self->code_line_numbers // scalar($txt =~ m{^\s+#!/}s)),
-			);
-			my $out = $hlt->html( "PPI::Document"->new(\$txt) );
-			
-			$out =~ s/<br>//g;  # already in <pre>!
-			
-			$pre->removeChild($_) for $pre->childNodes;
-			$pre->appendWellBalancedChunk($out);
-			
-			$pre->findnodes('.//*[@class]')->foreach(sub
+			if ($_->nodeName eq '#comment')
 			{
-				$_->{style} = $CSS->{$_->{class}} if $CSS->{$_->{class}};
-			});
+				my $data = $_->data;
+				while ($data =~ m{\b(\w+?)=(\S+)}g)
+				{
+					my ($k, $v) = ($1, $2);
+					$opt->{$k} = $v;
+				}
+				return;
+			}
+			
+			$self->_syntax_highlighting_for_element($_ => $opt);
 		});
 	}
 	
+	sub _syntax_highlighting_for_element
+	{
+		my $self = shift;
+		my ($pre, $opt) = @_;
+		
+		my $out = $self->_syntax_highlighting_for_text($pre->textContent, $opt);		
+		$out =~ s/<br>//g;  # already in <pre>!
+		
+		# Replace original <pre> contents with new stuff.
+		$pre->removeChild($_) for $pre->childNodes;
+		$pre->appendWellBalancedChunk($out);
+		
+		# Adjust CSS
+		my $CSS = $self->code_styles;
+		$pre->findnodes('.//*[@class]')->foreach(sub
+		{
+			$_->{style} = $CSS->{$_->{class}} if $CSS->{$_->{class}};
+		});
+		
+		# Add @class to <pre> itself
+		$pre->{class} = sprintf("highlighting-%s", lc $opt->{language});
+	}
+	
+	sub _syntax_highlighting_for_text
+	{
+		my $self = shift;
+		my ($txt, $opt) = @_;
+		
+		return $txt
+			if lc $opt->{language} eq "text";
+			
+		return $self->_syntax_highlighting_for_text_via_ppi(@_)
+			if lc $opt->{language} eq "perl";
+		
+		return $self->_syntax_highlighting_for_text_via_kate(@_);
+	}
+	
+	sub _syntax_highlighting_for_text_via_ppi
+	{
+		my $self = shift;
+		my ($txt, $opt) = @_;
+		
+		require PPI::Document;
+		require PPI::HTML;
+		
+		my $hlt = "PPI::HTML"->new(
+			line_numbers => ($opt->{line_numbers} // scalar($txt =~ m{^\s+#!/}s)),
+		);		
+		return $hlt->html("PPI::Document"->new(\$txt));
+	}
+	
+	# Does not support line numbers
+	sub _syntax_highlighting_for_text_via_kate
+	{
+		my $self = shift;
+		my ($txt, $opt) = @_;
+		
+		require Syntax::Highlight::Engine::Kate;
+		
+		my $hl = "Syntax::Highlight::Engine::Kate"->new(
+			language      => $opt->{language},
+			substitutions => {
+				"<" => "&lt;",
+				">" => "&gt;",
+				"&" => "&amp;",
+				"\n" => "<br />\n",
+			},
+			format_table  => {
+				Alert        => [q[<span class="alert">],    q[</span>]],
+				BaseN        => [q[<span class="basen">],    q[</span>]],
+				BString      => [q[<span class="bstring">],  q[</span>]],
+				Char         => [q[<span class="single">],   q[</span>]],
+				Comment      => [q[<span class="comment">],  q[</span>]],
+				DataType     => [q[<span class="datatype">], q[</span>]],
+				DecVal       => [q[<span class="number">],   q[</span>]],
+				Error        => [q[<span class="error">],    q[</span>]],
+				Float        => [q[<span class="number">],   q[</span>]],
+				Function     => [q[<span class="function">], q[</span>]],
+				IString      => [q[<span class="double">],   q[</span>]],
+				Keyword      => [q[<span class="keyword">],  q[</span>]],
+				Normal       => ["", ""],
+				Operator     => [q[<span class="operator">], q[</span>]],
+				Others       => [q[<span class="others">],   q[</span>]],
+				RegionMarker => [q[<span class="regionmarker">], q[</span>]],
+				Reserved     => [q[<span class="keyword">],  q[</span>]],
+				String       => [q[<span class="single">],   q[</span>]],
+				Variable     => [q[<span class="variable">], q[</span>]],
+				Warning      => [q[<span class="warning">],  q[</span>]],
+			},
+		);
+		return $hl->highlightText($txt);
+	}
+
 	sub _dom_to_html
 	{
 		require HTML::HTML5::Writer;
@@ -240,8 +331,6 @@ __END__
 TOBYINK::Pod::HTML - convert Pod to HTML like TOBYINK
 
 =head1 SYNOPSIS
-
-=for TOBYINK::Pod::HTML highlighting=perl
 
    #!/usr/bin/perl
    
@@ -379,6 +468,31 @@ This feature requires L<HTML::HTML5::Writer>.
 =item C<< BUILD >>
 
 =end trustme
+
+=head2 Alternative Syntax Highlighting
+
+This module defines an additional Pod command to change the language for
+syntax highlighting. To tell TOBYINK::Pod::HTML to switch to, say, Haskell
+instead of the default (Perl), just use:
+
+	=for TOBYINK::Pod::HTML language=Haskell
+
+Then all subsequent code samples will be highlighted as Haskell, until
+another such command is seen.
+
+While syntax highlighting for Perl uses L<PPI::HTML>, alternative syntax
+highlighting uses L<Syntax::Highlight::Engine::Kate>, so you need to have
+that installed if you want that feature. Note that the language names
+defined by Syntax::Highlight::Engine::Kate are case-sensitive, and
+TOBYINK::Pod::HTML makes no attempt at case-folding, so you must use the
+correct case!
+
+Note that only the PPI highlighter supports line numbering.
+
+The following command can be used to switch to plain text syntax highlighting
+(i.e. no highlighting at all):
+
+	=for TOBYINK::Pod::HTML language=Text
 
 =head1 SEE ALSO
 
