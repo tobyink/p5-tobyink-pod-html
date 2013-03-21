@@ -168,8 +168,8 @@ use XML::LibXML::QuerySelector ();
 		my ($method, $input) = @_;
 		
 		my $tmp;
-		my $p = "TOBYINK::Pod::HTML::Helper"->new;
-		$p->accept_targets(__PACKAGE__);
+		my $p = (__PACKAGE__."::Helper")->new;
+		$p->accept_targets(qw/ highlighter /);
 		$p->output_string(\$tmp);
 		$p->$method($input);
 		return $tmp;
@@ -192,7 +192,7 @@ use XML::LibXML::QuerySelector ();
 		
 		# Non-useful comments
 		$_->parentNode->removeChild($_) for
-			grep { not /for TOBYINK::Pod::HTML/ }
+			grep { not /for (highlighter)/ }
 			$dom->findnodes('//comment()');
 		
 		# Drop these <a name> elements
@@ -489,13 +489,13 @@ This feature requires L<HTML::HTML5::Writer>.
 
 =head2 Alternative Syntax Highlighting
 
-=for TOBYINK::Pod::HTML language=Text
+=for highlighter language=Text
 
 This module defines an additional Pod command to change the language for
 syntax highlighting. To tell TOBYINK::Pod::HTML to switch to, say, Haskell
 instead of the default (Perl), just use:
 
-   =for TOBYINK::Pod::HTML language=Haskell
+   =for highlighter language=Haskell
 
 Then all subsequent code samples will be highlighted as Haskell, until
 another such command is seen.
@@ -512,9 +512,9 @@ Note that only the PPI highlighter supports line numbering.
 The following command can be used to switch to plain text syntax highlighting
 (i.e. no highlighting at all):
 
-   =for TOBYINK::Pod::HTML language=Text
+   =for highlighter language=Text
 
-=for TOBYINK::Pod::HTML language=Perl
+=for highlighter language=Perl
 
 =head1 SEE ALSO
 
