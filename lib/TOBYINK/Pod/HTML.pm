@@ -10,7 +10,7 @@ use XML::LibXML::QuerySelector ();
 	package TOBYINK::Pod::HTML::Helper;
 	
 	our $AUTHORITY = 'cpan:TOBYINK';
-	our $VERSION   = '0.002';
+	our $VERSION   = '0.003';
 	
 	use parent "Pod::Simple::HTML";
 	
@@ -31,7 +31,7 @@ use XML::LibXML::QuerySelector ();
 			? (@r    = $self->SUPER::_get_titled_section(@_))
 			: ($r[0] = $self->SUPER::_get_titled_section(@_));
 		delete $self->{_in_get_titled_section};
-		wantarray ? @r : $_[0];
+		wantarray ? @r : $r[0];
 	}
 	
 	sub get_token
@@ -60,7 +60,7 @@ use XML::LibXML::QuerySelector ();
 	package TOBYINK::Pod::HTML;
 	
 	our $AUTHORITY = 'cpan:TOBYINK';
-	our $VERSION   = '0.002';
+	our $VERSION   = '0.003';
 	
 	use Moo;
 	use Carp;

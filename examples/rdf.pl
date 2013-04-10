@@ -3,6 +3,10 @@ print "TOBYINK::Pod::HTML"->new(code_highlighting => 1, pretty => 1)->file_to_ht
 
 __END__
 
+=head1 NAME
+
+RDF Syntax Highlighting Examples
+
 =head1 EXAMPLES
 
 Here is some Turtle for syntax highlighting...
