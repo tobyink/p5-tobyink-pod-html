@@ -25,9 +25,13 @@ use XML::LibXML::QuerySelector ();
 	sub _get_titled_section
 	{
 		my $self = shift;
+		my @r;
 		$self->{_in_get_titled_section} = 1;
-		$self->SUPER::_get_titled_section(@_);
+		wantarray
+			? (@r    = $self->SUPER::_get_titled_section(@_))
+			: ($r[0] = $self->SUPER::_get_titled_section(@_));
 		delete $self->{_in_get_titled_section};
+		wantarray ? @r : $_[0];
 	}
 	
 	sub get_token
@@ -540,12 +544,14 @@ instead of the default (Perl), just use:
 Then all subsequent code samples will be highlighted as Haskell, until
 another such command is seen.
 
-While syntax highlighting for Perl uses L<PPI::HTML>, alternative syntax
-highlighting uses L<Syntax::Highlight::Engine::Kate>, so you need to have
-that installed if you want that feature. Note that the language names
-defined by Syntax::Highlight::Engine::Kate are case-sensitive, and
-TOBYINK::Pod::HTML makes no attempt at case-folding, so you must use the
-correct case!
+While syntax highlighting for Perl uses L<PPI::HTML>, syntax highlighting
+for other languages uses either L<Syntax::Highlight::RDF> or
+L<Syntax::Highlight::Engine::Kate> as appropriate, so you need to have
+them installed if you want this feature.
+
+Note that the language names defined by Syntax::Highlight::Engine::Kate
+are case-sensitive, and TOBYINK::Pod::HTML makes no attempt at case-folding,
+so you must use the correct case!
 
 Note that only the PPI highlighter supports line numbering.
 
