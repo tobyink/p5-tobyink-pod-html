@@ -10,3 +10,10 @@
 		item "Allow non-Perl languages to be syntax highlighted too."^^Addition;
 	].
 
+`TOBYINK-Pod-HTML 0.003 cpan:TOBYINK`
+	issued  2013-04-10;
+	changeset [
+		item "Syntax highlighting for Semantic Web related languages using Syntax::Highlight::RDF."^^Addition;
+		item "Switching syntax highlight language in documents that have no NAME section was broken due to Pod::Simple::PullParser's look-ahead feature. This should now work."^^Bugfix;
+	].
+
