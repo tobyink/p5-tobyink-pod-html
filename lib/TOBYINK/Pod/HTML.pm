@@ -156,6 +156,13 @@ use XML::LibXML::QuerySelector ();
 		$self->string_to_dom(@_)->toString;
 	}
 	
+	sub _pull_code_styles
+	{
+		my $css  = shift->code_styles;
+		my %pull = @_;
+		$css->{$_} = $pull{$_} for grep !exists($css->{$_}), keys %pull;
+	}
+	
 	sub _pod_to_dom
 	{
 		my $self = shift;
@@ -298,7 +305,17 @@ use XML::LibXML::QuerySelector ();
 		my ($txt, $opt) = @_;
 		
 		require Syntax::Highlight::RDF;
-		require PPI::HTML;
+		require Syntax::Highlight::XML;
+		require Syntax::Highlight::JSON2;
+		
+		# Syntax::Highlight::RDF uses different CSS classes
+		my $css = $self->code_styles;
+		$self->_pull_code_styles(%Syntax::Highlight::RDF::STYLE)
+			unless $css->{rdf_comment};
+		$self->_pull_code_styles(%Syntax::Highlight::XML::STYLE)
+			unless $css->{xml_tag_is_doctype};
+		$self->_pull_code_styles(%Syntax::Highlight::JSON2::STYLE)
+			unless $css->{json_boolean};
 		
 		my $hlt = "Syntax::Highlight::RDF"->highlighter($opt->{language});
 		return $hlt->highlight(\$txt);

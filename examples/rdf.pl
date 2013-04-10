@@ -12,7 +12,7 @@ Here is some Turtle for syntax highlighting...
    @prefix foaf: <http://xmlns.com/foaf/0.1/>.
    
    <http://tobyinkster.co.uk/#i>
-      a foaf:Person ;
+      a foaf:Person;
       foaf:name "Toby Inkster".
 
 And here's how you might query it using SPARQL...
