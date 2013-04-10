@@ -22,12 +22,20 @@ use XML::LibXML::QuerySelector ();
 		return $self;
 	}
 	
+	sub _get_titled_section
+	{
+		my $self = shift;
+		$self->{_in_get_titled_section} = 1;
+		$self->SUPER::_get_titled_section(@_);
+		delete $self->{_in_get_titled_section};
+	}
+	
 	sub get_token
 	{
 		my $self = shift;
 		my $tok = $self->SUPER::get_token;
 		
-		if (defined $tok and $tok->[0] eq 'start' and $tok->[1] eq 'for')
+		if (!$self->{_in_get_titled_section} and defined $tok and $tok->[0] eq 'start' and $tok->[1] eq 'for')
 		{
 			my $target = $tok->[2]{"target"};
 			my $data;
