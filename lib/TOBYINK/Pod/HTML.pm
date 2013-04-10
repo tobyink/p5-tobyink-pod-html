@@ -36,7 +36,7 @@ use XML::LibXML::QuerySelector ();
 				$data .= $tok->[1] if $tok->[0] eq 'text';
 				$tok = $self->SUPER::get_token;
 			}
-			print {$self->{"output_fh"}} "<!-- for $target $data -->\n";
+			${$self->output_string} .= "<!-- for $target $data -->\n";
 			$tok = $self->SUPER::get_token;
 		}
 		
@@ -259,10 +259,13 @@ use XML::LibXML::QuerySelector ();
 		my ($txt, $opt) = @_;
 		
 		return $txt
-			if lc $opt->{language} eq "text";
-			
+			if $opt->{language} =~ /^(text)$/i;
+		
 		return $self->_syntax_highlighting_for_text_via_ppi(@_)
-			if lc $opt->{language} eq "perl";
+			if $opt->{language} =~ /^(perl)$/i;
+		
+		return $self->_syntax_highlighting_for_text_via_shrdf(@_)
+			if $opt->{language} =~ /^(turtle|n.?triples|n.?quads|trig|n3|notation.?3|pret|pretdsl|sparql|sparql.?(update|query)|json|xml)$/i;
 		
 		return $self->_syntax_highlighting_for_text_via_kate(@_);
 	}
@@ -280,7 +283,19 @@ use XML::LibXML::QuerySelector ();
 		);
 		return $hlt->html("PPI::Document"->new(\$txt));
 	}
-	
+
+	sub _syntax_highlighting_for_text_via_shrdf
+	{
+		my $self = shift;
+		my ($txt, $opt) = @_;
+		
+		require Syntax::Highlight::RDF;
+		require PPI::HTML;
+		
+		my $hlt = "Syntax::Highlight::RDF"->highlighter($opt->{language});
+		return $hlt->highlight(\$txt);
+	}
+
 	# Does not support line numbers
 	sub _syntax_highlighting_for_text_via_kate
 	{
