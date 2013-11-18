@@ -339,7 +339,7 @@ use XML::LibXML::QuerySelector ();
 				"<" => "&lt;",
 				">" => "&gt;",
 				"&" => "&amp;",
-				"\n" => "<br />\n",
+				"\n" => "\n",
 			},
 			format_table  => {
 				Normal       => ["", ""],
