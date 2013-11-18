@@ -21,5 +21,6 @@
 	issued  2013-11-18;
 	changeset [
 		item "Don't need to use <br> within <pre>...</pre>."^^Bugfix;
+		item "use Dist::Inkt"^^Packaging;
 	].
 
