@@ -10,7 +10,7 @@ use XML::LibXML::QuerySelector ();
 	package TOBYINK::Pod::HTML::Helper;
 	
 	our $AUTHORITY = 'cpan:TOBYINK';
-	our $VERSION   = '0.003';
+	our $VERSION   = '0.004';
 	
 	use parent "Pod::Simple::HTML";
 	
@@ -60,7 +60,7 @@ use XML::LibXML::QuerySelector ();
 	package TOBYINK::Pod::HTML;
 	
 	our $AUTHORITY = 'cpan:TOBYINK';
-	our $VERSION   = '0.003';
+	our $VERSION   = '0.004';
 	
 	use Moo;
 	use Carp;

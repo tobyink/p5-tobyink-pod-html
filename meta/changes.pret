@@ -17,3 +17,9 @@
 		item "Switching syntax highlight language in documents that have no NAME section was broken due to Pod::Simple::PullParser's look-ahead feature. This should now work."^^Bugfix;
 	].
 
+`TOBYINK-Pod-HTML 0.004 cpan:TOBYINK`
+	issued  2013-11-18;
+	changeset [
+		item "Don't need to use <br> within <pre>...</pre>."^^Bugfix;
+	].
+
