@@ -18,7 +18,7 @@ use XML::LibXML::QuerySelector ();
 	{
 		my $class = shift;
 		my $self  = $class->SUPER::new(@_);
-		$self->perldoc_url_prefix("https://metacpan.org/module/");
+		$self->perldoc_url_prefix("https://metacpan.org/pod/");
 		return $self;
 	}
 	
