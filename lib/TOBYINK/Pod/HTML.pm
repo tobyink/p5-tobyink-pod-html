@@ -10,7 +10,7 @@ use XML::LibXML::QuerySelector ();
 	package TOBYINK::Pod::HTML::Helper;
 	
 	our $AUTHORITY = 'cpan:TOBYINK';
-	our $VERSION   = '0.004';
+	our $VERSION   = '0.005';
 	
 	use parent "Pod::Simple::HTML";
 	
@@ -60,7 +60,7 @@ use XML::LibXML::QuerySelector ();
 	package TOBYINK::Pod::HTML;
 	
 	our $AUTHORITY = 'cpan:TOBYINK';
-	our $VERSION   = '0.004';
+	our $VERSION   = '0.005';
 	
 	use Moo;
 	use Carp;
@@ -572,7 +572,7 @@ Toby Inkster E<lt>tobyink@cpan.orgE<gt>.
 
 =head1 COPYRIGHT AND LICENCE
 
-This software is copyright (c) 2013 by Toby Inkster.
+This software is copyright (c) 2013-2014 by Toby Inkster.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

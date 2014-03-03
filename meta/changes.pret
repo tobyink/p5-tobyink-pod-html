@@ -24,3 +24,9 @@
 		item "use Dist::Inkt"^^Packaging;
 	].
 
+`TOBYINK-Pod-HTML 0.005 cpan:TOBYINK`
+	issued  2014-03-03;
+	changeset [
+		item "Update links to use https://metacpan.org/pod/ instead of https://metacpan.org/module/."^^Update;
+	].
+
