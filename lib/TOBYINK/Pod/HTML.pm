@@ -17,6 +17,7 @@ use XML::LibXML::QuerySelector ();
 	sub new
 	{
 		my $class = shift;
+		$Pod::Simple::HTML::Content_decl = q{<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >};
 		my $self  = $class->SUPER::new(@_);
 		$self->perldoc_url_prefix("https://metacpan.org/pod/");
 		return $self;
